@@ -2,11 +2,11 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const CustomButton = ({ children, navigateTo, backgroundColor }) => {
+const SaveButton = ({ children, navigateTo, backgroundColor }) => {
   const router = useRouter();
 
   const handlePress = () => {
-    router.push(navigateTo); // Navigiert zur angegebenen Route
+    router.push(navigateTo); 
   };
 
   return (
@@ -31,4 +31,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomButton;
+export default SaveButton;
