@@ -6,6 +6,7 @@
 
 `npx expo install expo-crypto @react-native-async-storage/async-storage`
 
+`npx expo install react-native-gesture-handler react-native-reanimated @expo/vector-icons`
 
 **To start the app**
 `npm start`
