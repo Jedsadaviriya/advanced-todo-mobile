@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
+import { View, Text, StyleSheet } from 'react-native';
+import SaveButton from '../components/SaveButton';
 
-export default function Page() {
+export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Hello World</Text>
-        <Text style={styles.subtitle}>This is the first page of your app.</Text>
-      </View>
+      <SaveButton navigateTo="" backgroundColor="#75F27E">
+        <Text style={styles.buttonText}>Save</Text>
+      </SaveButton>
+      <SaveButton navigateTo="" backgroundColor="#FFC3C3">
+        <Text style={styles.buttonText}>Cancel</Text>
+      </SaveButton>
     </View>
   );
 }
@@ -14,21 +17,14 @@ export default function Page() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#F5F5F5',
   },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
