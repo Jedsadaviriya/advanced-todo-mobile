@@ -3,8 +3,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { View, Text } from "react-native";
 import BottomNavIcon from "../components/BottomNavIcon";
 import { TaskProvider, useTask } from "../components/TaskContext";
+import HeaderMenu from "../components/HeaderMenu";
 
-// Custom tab bar badge component
 function TabBadge({ count }) {
   if (count === 0) return null;
   
@@ -31,7 +31,6 @@ function TabBadge({ count }) {
   );
 }
 
-// Custom tab icon with badge
 function TabIconWithBadge({ name, color, focused, badgeCount }) {
   return (
     <View style={{ position: 'relative' }}>
@@ -75,10 +74,9 @@ function TabsLayout() {
           fontWeight: "600",
           marginTop: 4,
         },
-        // Enable headers with custom styling
         headerShown: true,
         headerStyle: {
-          backgroundColor: "#FFF5E1", // Same as bottom navigation
+          backgroundColor: "#FFF5E1", 
           borderBottomWidth: 1,
           borderBottomColor: "#E0E0E0",
           elevation: 2,
@@ -93,18 +91,20 @@ function TabsLayout() {
         headerTitleStyle: {
           fontSize: 18,
           fontWeight: "bold",
-          color: "#305361", // Dark color for title
+          color: "#305361", 
         },
-        headerTintColor: "#305361", // Color for back button and other header elements
+        headerTintColor: "#305361", 
         headerTitleAlign: "center",
       }}
     >
+      {/* active tab */}
       <Tabs.Screen
         name="active/index"
         options={{
           title: "Active Tasks",
           headerTitle: "Active Tasks",
           tabBarLabel: "Active",
+          headerRight: () => <HeaderMenu screenType="active" />,
           tabBarIcon: ({ color, focused }) => (
             <TabIconWithBadge
               name="menu-outline"
@@ -115,12 +115,15 @@ function TabsLayout() {
           ),
         }}
       />
+
+      {/* completed tab */}
       <Tabs.Screen
         name="completed/index"
         options={{
           title: "Completed Tasks",
           headerTitle: "Completed Tasks", 
           tabBarLabel: "Completed",
+          headerRight: () => <HeaderMenu screenType="completed" />,
           tabBarIcon: ({ color, focused }) => (
             <TabIconWithBadge
               name="folder-outline"
@@ -131,11 +134,11 @@ function TabsLayout() {
           ),
         }}
       />
-      {/* Hidden screens */}
+
       <Tabs.Screen
         name="add-task"
         options={{
-          href: null, // Hide from tab bar
+          href: null,
           headerShown: true,
           headerTitle: "Add New Task",
           headerStyle: {
@@ -149,15 +152,75 @@ function TabsLayout() {
             color: "#305361",
           },
           headerTintColor: "#305361",
-          presentation: "modal", // Makes it slide up from bottom
         }}
       />
+
+      <Tabs.Screen
+        name="edit-task/[id]"
+        options={{
+          href: null, 
+          headerShown: true,
+          headerTitle: "Edit Task",
+          headerStyle: {
+            backgroundColor: "#FFF5E1",
+            borderBottomWidth: 1,
+            borderBottomColor: "#E0E0E0",
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+            color: "#305361",
+          },
+          headerTintColor: "#305361",
+        }}
+      />
+
       <Tabs.Screen
         name="[id]"
         options={{
-          href: null, // Hide from tab bar
+          href: null, 
           headerShown: true,
           headerTitle: "Task Details",
+          headerStyle: {
+            backgroundColor: "#FFF5E1",
+            borderBottomWidth: 1,
+            borderBottomColor: "#E0E0E0",
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+            color: "#305361",
+          },
+          headerTintColor: "#305361",
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          href: null, 
+          headerShown: true,
+          headerTitle: "Settings",
+          headerStyle: {
+            backgroundColor: "#FFF5E1",
+            borderBottomWidth: 1,
+            borderBottomColor: "#E0E0E0",
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+            color: "#305361",
+          },
+          headerTintColor: "#305361",
+        }}
+      />
+
+      <Tabs.Screen
+        name="help"
+        options={{
+          href: null,
+          headerShown: true,
+          headerTitle: "Help & Support",
           headerStyle: {
             backgroundColor: "#FFF5E1",
             borderBottomWidth: 1,

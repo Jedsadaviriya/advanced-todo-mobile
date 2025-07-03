@@ -17,7 +17,6 @@ export const TaskProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { getItem, setItem } = useAsyncStorage("todoTasks");
 
-  // Load tasks when app starts
   useEffect(() => {
     loadTasks();
   }, []);
@@ -26,8 +25,10 @@ export const TaskProvider = ({ children }) => {
     try {
       setLoading(true);
       const storedTasks = await getItem();
+      console.log('Loaded tasks from storage:', storedTasks); 
       if (storedTasks) {
         const parsedTasks = JSON.parse(storedTasks);
+        console.log('Parsed tasks:', parsedTasks); 
         setTasks(parsedTasks);
       }
     } catch (error) {
@@ -39,6 +40,7 @@ export const TaskProvider = ({ children }) => {
 
   const saveTasks = async (tasksToSave) => {
     try {
+      console.log('Saving tasks:', tasksToSave); 
       await setItem(JSON.stringify(tasksToSave));
     } catch (error) {
       console.error('Error saving tasks:', error);
@@ -79,6 +81,20 @@ export const TaskProvider = ({ children }) => {
     await saveTasks(updatedTasks);
   };
 
+  const completeAllTasks = async () => {
+    const updatedTasks = tasks.map(task =>
+      !task.completed 
+        ? { 
+            ...task, 
+            completed: true,
+            updatedAt: new Date().toISOString()
+          } 
+        : task
+    );
+    setTasks(updatedTasks);
+    await saveTasks(updatedTasks);
+  };
+
   const deleteTask = async (id) => {
     const updatedTasks = tasks.filter(task => task.id !== id);
     setTasks(updatedTasks);
@@ -103,8 +119,17 @@ export const TaskProvider = ({ children }) => {
     return tasks.find(task => task.id === id);
   };
 
-  const getActiveTasks = () => tasks.filter(task => !task.completed);
-  const getCompletedTasks = () => tasks.filter(task => task.completed);
+  const getActiveTasks = () => {
+    const activeTasks = tasks.filter(task => !task.completed);
+    console.log('Active tasks:', activeTasks); 
+    return activeTasks;
+  };
+
+  const getCompletedTasks = () => {
+    const completedTasks = tasks.filter(task => task.completed);
+    console.log('Completed tasks:', completedTasks); 
+    return completedTasks;
+  };
 
   const clearAllTasks = async () => {
     setTasks([]);
@@ -117,6 +142,10 @@ export const TaskProvider = ({ children }) => {
     await saveTasks(activeTasks);
   };
 
+  useEffect(() => {
+    console.log('Current tasks in context:', tasks);
+  }, [tasks]);
+
   return (
     <TaskContext.Provider
       value={{
@@ -124,6 +153,7 @@ export const TaskProvider = ({ children }) => {
         loading,
         addTask,
         completeTask,
+        completeAllTasks,
         deleteTask,
         updateTask,
         getTaskById,

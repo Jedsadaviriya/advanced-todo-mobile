@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import TodoForms from '../components/Todoforms';
-import { useTask } from '../components/TaskContext';
+import TodoForms from '../../components/Todoforms';
+import { useTask } from '../../components/TaskContext';
 
 export default function EditTaskScreen() {
   const { id } = useLocalSearchParams();
