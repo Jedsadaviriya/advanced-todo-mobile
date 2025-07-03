@@ -1,15 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native';
 import SaveButton from '../components/SaveButton';
+import TodoForm from '../components/Todoforms';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <SaveButton navigateTo="" backgroundColor="#75F27E">
-        <Text style={styles.buttonText}>Save</Text>
-      </SaveButton>
-      <SaveButton navigateTo="" backgroundColor="#FFC3C3">
-        <Text style={styles.buttonText}>Cancel</Text>
-      </SaveButton>
+      <TodoForm/>
     </View>
   );
 }
