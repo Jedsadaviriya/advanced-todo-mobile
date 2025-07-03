@@ -8,5 +8,7 @@
 
 `npx expo install react-native-gesture-handler react-native-reanimated @expo/vector-icons`
 
+`npx expo install @react-native-picker/picker`
+
 **To start the app**
 `npm start`
