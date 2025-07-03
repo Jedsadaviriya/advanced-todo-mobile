@@ -15,7 +15,7 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
   const router = useRouter();
   const { addTask, updateTask } = useTask();
 
-  // Icon options array
+  // Icon options array (same as before)
   const iconOptions = [
     { label: 'Kreis', value: 'circle', iconName: 'circle' },
     { label: 'Herz', value: 'heart', iconName: 'favorite' },
@@ -91,40 +91,27 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
     }
   };
 
-  const handleCancel = () => {
-    router.back();
-  };
-
   const renderIconItem = ({ item }) => (
     <TouchableOpacity
       style={styles.iconItem}
       onPress={() => { setIcon(item.value); setShowIconPicker(false); }}
     >
-      <Icon name={item.iconName} size={30} color="#000000" />
+      <Icon name={item.iconName} size={30} color="#305361" />
       <Text style={styles.iconLabel}>{item.label}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
+    <View style={styles.container}>
+      {/* Save button in top right corner */}
+      <View style={styles.saveButtonContainer}>
         <TouchableOpacity 
-          style={styles.headerButton} 
-          onPress={handleCancel}
-          disabled={loading}
-        >
-          <Text style={styles.headerButtonText}>Cancel</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          {editTask ? 'Edit ToDo' : 'Add ToDo'}
-        </Text>
-        <TouchableOpacity 
-          style={[styles.headerButton, loading && styles.disabledButton]} 
+          style={[styles.saveButton, loading && styles.disabledButton]} 
           onPress={handleSubmit}
           disabled={loading}
         >
-          <Text style={[styles.headerButtonText, loading && styles.disabledText]}>
-            {loading ? 'Saving...' : 'Done'}
+          <Text style={[styles.saveButtonText, loading && styles.disabledText]}>
+            {loading ? 'Saving...' : 'Save'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -165,7 +152,7 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
           <Icon 
             name={iconOptions.find((o) => o.value === icon)?.iconName || 'circle'} 
             size={30} 
-            color="#000000" 
+            color="#305361" 
           />
         </TouchableOpacity>
 
@@ -195,36 +182,30 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
           </SafeAreaView>
         </Modal>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF5E1', // Match navigation background
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+  saveButtonContainer: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
-  headerButton: {
-    padding: 8,
+  saveButton: {
+    backgroundColor: '#305361',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
   },
-  headerButtonText: {
+  saveButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    color: '#305361', 
     fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
   },
   disabledButton: {
     opacity: 0.5,
@@ -235,12 +216,12 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     paddingHorizontal: 20, 
-    paddingTop: 20,
+    paddingTop: 10,
   },
   label: {
     fontSize: 16,
     fontWeight: '500', 
-    color: '#000000',
+    color: '#305361',
     marginBottom: 8,
     marginTop: 16,
   },
@@ -265,7 +246,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF5E1',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -279,7 +260,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#305361',
   },
   iconList: {
     padding: 16,

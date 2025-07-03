@@ -75,13 +75,36 @@ function TabsLayout() {
           fontWeight: "600",
           marginTop: 4,
         },
-        headerShown: false,
+        // Enable headers with custom styling
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: "#FFF5E1", // Same as bottom navigation
+          borderBottomWidth: 1,
+          borderBottomColor: "#E0E0E0",
+          elevation: 2,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+        },
+        headerTitleStyle: {
+          fontSize: 18,
+          fontWeight: "bold",
+          color: "#305361", // Dark color for title
+        },
+        headerTintColor: "#305361", // Color for back button and other header elements
+        headerTitleAlign: "center",
       }}
     >
       <Tabs.Screen
         name="active/index"
         options={{
-          title: "Active",
+          title: "Active Tasks",
+          headerTitle: "Active Tasks",
+          tabBarLabel: "Active",
           tabBarIcon: ({ color, focused }) => (
             <TabIconWithBadge
               name="menu-outline"
@@ -95,7 +118,9 @@ function TabsLayout() {
       <Tabs.Screen
         name="completed/index"
         options={{
-          title: "Completed",
+          title: "Completed Tasks",
+          headerTitle: "Completed Tasks", 
+          tabBarLabel: "Completed",
           tabBarIcon: ({ color, focused }) => (
             <TabIconWithBadge
               name="folder-outline"
@@ -111,12 +136,39 @@ function TabsLayout() {
         name="add-task"
         options={{
           href: null, // Hide from tab bar
+          headerShown: true,
+          headerTitle: "Add New Task",
+          headerStyle: {
+            backgroundColor: "#FFF5E1",
+            borderBottomWidth: 1,
+            borderBottomColor: "#E0E0E0",
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+            color: "#305361",
+          },
+          headerTintColor: "#305361",
+          presentation: "modal", // Makes it slide up from bottom
         }}
       />
       <Tabs.Screen
         name="[id]"
         options={{
           href: null, // Hide from tab bar
+          headerShown: true,
+          headerTitle: "Task Details",
+          headerStyle: {
+            backgroundColor: "#FFF5E1",
+            borderBottomWidth: 1,
+            borderBottomColor: "#E0E0E0",
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+            color: "#305361",
+          },
+          headerTintColor: "#305361",
         }}
       />
     </Tabs>
