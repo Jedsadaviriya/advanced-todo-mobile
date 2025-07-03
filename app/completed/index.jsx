@@ -5,14 +5,19 @@ import TaskItem from "../../components/TaskItem";
 import { useTask } from "../../components/TaskContext";
 
 export default function CompletedScreen() {
-  const { getCompletedTasks, deleteTask, loading } = useTask();
+  const { getCompletedTasks, deleteTask, completeTask, loading } = useTask();
   const completedTasks = getCompletedTasks();
+
+  const handleUndo = (taskId) => {
+    completeTask(taskId);
+  };
 
   const renderItem = ({ item }) => (
     <TaskItem
       task={item}
-      onComplete={() => {}} // No complete action for completed tasks
+      onComplete={() => handleUndo(item.id)} 
       onDelete={() => deleteTask(item.id)}
+      showCompleteAction={true} 
     />
   );
 

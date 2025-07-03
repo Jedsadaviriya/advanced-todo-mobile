@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useTask } from './TaskContext';
 
 const TodoForms = ({ navigateTo, editTask = null }) => {
-  // Initialize with edit data if editing, otherwise empty
   const [title, setTitle] = useState(editTask?.title || '');
   const [description, setDescription] = useState(editTask?.description || '');
   const [icon, setIcon] = useState(editTask?.icon || 'edit');
@@ -15,7 +14,6 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
   const router = useRouter();
   const { addTask, updateTask } = useTask();
 
-  // Icon options array (same as before)
   const iconOptions = [
     { label: 'Kreis', value: 'circle', iconName: 'circle' },
     { label: 'Herz', value: 'heart', iconName: 'favorite' },
@@ -59,7 +57,7 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
     
     try {
       if (editTask) {
-        // Update existing task
+        // update existing task
         await updateTask(editTask.id, {
           title: title.trim(),
           description: description.trim(),
@@ -77,7 +75,7 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
         }
       }
       
-      // Navigate back or to specified route
+      // back or to a route
       if (navigateTo) {
         router.push(navigateTo);
       } else {
@@ -88,6 +86,30 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
       Alert.alert('Fehler', 'Ein Fehler ist aufgetreten.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    // check for unsaved changes
+    const hasChanges = editTask 
+      ? (title !== editTask.title || description !== editTask.description || icon !== editTask.icon)
+      : (title.trim() !== '' || description.trim() !== '' || icon !== 'edit');
+
+    if (hasChanges) {
+      Alert.alert(
+        'Unsaved Changes',
+        'You have unsaved changes. Are you sure you want to cancel?',
+        [
+          { text: 'Keep Editing', style: 'cancel' },
+          { 
+            text: 'Discard Changes', 
+            style: 'destructive', 
+            onPress: () => router.back() 
+          },
+        ]
+      );
+    } else {
+      router.back();
     }
   };
 
@@ -103,8 +125,17 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
 
   return (
     <View style={styles.container}>
-      {/* Save button in top right corner */}
-      <View style={styles.saveButtonContainer}>
+      <View style={styles.actionButtonsContainer}>
+        <TouchableOpacity 
+          style={[styles.cancelButton, loading && styles.disabledButton]} 
+          onPress={handleCancel}
+          disabled={loading}
+        >
+          <Text style={[styles.cancelButtonText, loading && styles.disabledText]}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity 
           style={[styles.saveButton, loading && styles.disabledButton]} 
           onPress={handleSubmit}
@@ -189,12 +220,27 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5E1', // Match navigation background
+    backgroundColor: '#FFF5E1',
   },
-  saveButtonContainer: {
-    alignItems: 'flex-end',
+  actionButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 10,
+    paddingBottom: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#305361',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  cancelButtonText: {
+    color: '#305361',
+    fontSize: 16,
+    fontWeight: '600',
   },
   saveButton: {
     backgroundColor: '#305361',
