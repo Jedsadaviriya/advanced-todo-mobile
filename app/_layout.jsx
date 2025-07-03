@@ -136,6 +136,23 @@ function TabsLayout() {
       />
 
       <Tabs.Screen
+        name="stats/stats"
+        options={{
+          title: "Stats",
+          headerTitle: "Stats",
+          tabBarLabel: "Stats",
+          headerRight: () => <HeaderMenu screenType="active" />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIconWithBadge
+              name="stats-chart"
+              color={color}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="add-task"
         options={{
           href: null,
