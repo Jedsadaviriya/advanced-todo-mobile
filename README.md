@@ -10,5 +10,9 @@
 
 `npx expo install @react-native-picker/picker`
 
+`npm install react-native-chart-kit`
+
+`npm install react-native-svg`
+
 **To start the app**
 `npm start`
