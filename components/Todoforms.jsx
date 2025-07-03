@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Modal, FlatList, Dimensions, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Modal, FlatList, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useTask } from './TaskContext';
 
-const TodoForms = ({ navigateTo, editTask = null }) => {
-  // Initialize with edit data if editing, otherwise empty
-  const [title, setTitle] = useState(editTask?.title || '');
-  const [description, setDescription] = useState(editTask?.description || '');
-  const [icon, setIcon] = useState(editTask?.icon || 'edit');
+const TodoForms = ({ navigateTo }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [icon, setIcon] = useState('edit'); // Standard-Icon
   const [showIconPicker, setShowIconPicker] = useState(false);
-  const [loading, setLoading] = useState(false);
-  
   const router = useRouter();
-  const { addTask, updateTask } = useTask();
 
-  // Icon options array (same as before)
+  // Liste der verfügbaren Icons (MaterialIcons) mit etwa 30 Optionen
   const iconOptions = [
     { label: 'Kreis', value: 'circle', iconName: 'circle' },
     { label: 'Herz', value: 'heart', iconName: 'favorite' },
@@ -49,46 +44,19 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
     { label: 'Spiel', value: 'game', iconName: 'games' },
   ];
 
-  const handleSubmit = async () => {
-    if (!title.trim()) {
-      Alert.alert('Error', 'Bitte geben Sie einen Titel ein.');
-      return;
-    }
-
-    setLoading(true);
-    
-    try {
-      if (editTask) {
-        // Update existing task
-        await updateTask(editTask.id, {
-          title: title.trim(),
-          description: description.trim(),
-          icon: icon
-        });
-        Alert.alert('Erfolg', 'Aufgabe wurde aktualisiert!');
-      } else {
-        // Add new task
-        const success = await addTask(title.trim(), description.trim(), icon);
-        if (success) {
-          Alert.alert('Erfolg', 'Aufgabe wurde hinzugefügt!');
-        } else {
-          Alert.alert('Fehler', 'Aufgabe konnte nicht hinzugefügt werden.');
-          return;
-        }
-      }
-      
-      // Navigate back or to specified route
+  const handleSubmit = () => {
+    if (title && description && icon) {
+      console.log('Todo-Daten:', { title, description, icon });
       if (navigateTo) {
-        router.push(navigateTo);
-      } else {
-        router.back();
+        router.push(navigateTo); // Navigiert zur angegebenen Route
       }
-    } catch (error) {
-      console.error('Error saving task:', error);
-      Alert.alert('Fehler', 'Ein Fehler ist aufgetreten.');
-    } finally {
-      setLoading(false);
+    } else {
+      alert('Bitte fülle alle Felder aus.');
     }
+  };
+
+  const handleCancel = () => {
+    router.push('/'); // Zurück zur Hauptseite
   };
 
   const renderIconItem = ({ item }) => (
@@ -96,28 +64,23 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
       style={styles.iconItem}
       onPress={() => { setIcon(item.value); setShowIconPicker(false); }}
     >
-      <Icon name={item.iconName} size={30} color="#305361" />
-      <Text style={styles.iconLabel}>{item.label}</Text>
+      <Icon name={item.iconName} size={30} color="#000000" />
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      {/* Save button in top right corner */}
-      <View style={styles.saveButtonContainer}>
-        <TouchableOpacity 
-          style={[styles.saveButton, loading && styles.disabledButton]} 
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          <Text style={[styles.saveButtonText, loading && styles.disabledText]}>
-            {loading ? 'Saving...' : 'Save'}
-          </Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.headerButton} onPress={handleCancel}>
+          <Text style={styles.headerButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Add ToDos</Text>
+        <TouchableOpacity style={styles.headerButton} onPress={handleSubmit}>
+          <Text style={styles.headerButtonText}>Done</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.formContainer}>
-        <Text style={styles.label}>Title *</Text>
+        <Text style={styles.label}>Title</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter title"
@@ -126,166 +89,134 @@ const TodoForms = ({ navigateTo, editTask = null }) => {
           autoCapitalize="sentences"
           multiline
           numberOfLines={1}
-          maxLength={100}
-          editable={!loading}
         />
-
         <Text style={styles.label}>Description</Text>
         <TextInput
           style={[styles.input, styles.descriptionInput]}
-          placeholder="Enter description (optional)"
+          placeholder="Enter description"
           value={description}
           onChangeText={setDescription}
           autoCapitalize="sentences"
           multiline
           numberOfLines={3}
-          maxLength={500}
-          editable={!loading}
         />
-
         <Text style={styles.label}>Icon</Text>
         <TouchableOpacity
-          style={[styles.input, styles.iconSelector]} 
+          style={styles.input} 
           onPress={() => setShowIconPicker(true)}
-          disabled={loading}
         >
-          <Icon 
-            name={iconOptions.find((o) => o.value === icon)?.iconName || 'circle'} 
-            size={30} 
-            color="#305361" 
-          />
+          <Icon name={iconOptions.find((o) => o.value === icon)?.iconName || 'circle'} size={30} color="#000000" />
         </TouchableOpacity>
-
-        <Modal 
-          visible={showIconPicker} 
-          onRequestClose={() => setShowIconPicker(false)} 
-          animationType="slide"
-        >
-          <SafeAreaView style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Choose Icon</Text>
-              <TouchableOpacity 
-                style={styles.modalCloseButton} 
-                onPress={() => setShowIconPicker(false)}
-              >
-                <Text style={styles.modalCloseButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
+        <Modal visible={showIconPicker} onRequestClose={() => setShowIconPicker(false)} animationType="slide">
+          <View style={styles.modalContainer}>
             <FlatList
               data={iconOptions}
               renderItem={renderIconItem}
               keyExtractor={(item) => item.value}
-              numColumns={4}
+              numColumns={5}
               contentContainerStyle={styles.iconList}
-              showsVerticalScrollIndicator={false}
             />
-          </SafeAreaView>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowIconPicker(false)}>
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </Modal>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#FFF5E1', // Match navigation background
+    backgroundColor: '#F5F5F5',
   },
-  saveButtonContainer: {
-    alignItems: 'flex-end',
-    paddingHorizontal: 20,
-    paddingTop: 10,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
   },
-  saveButton: {
-    backgroundColor: '#305361',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
+  headerButton: {
+    padding: 10,
   },
-  saveButtonText: {
-    color: '#FFFFFF',
+  headerButtonText: {
     fontSize: 16,
+    color: '#000000', 
     fontWeight: '600',
   },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  disabledText: {
-    color: '#999',
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000000',
   },
   formContainer: {
     flex: 1,
     paddingHorizontal: 20, 
-    paddingTop: 10,
+    maxWidth: Dimensions.get('window').width - 40, 
+    alignItems: 'flex-start', 
+    width: '100%', 
+    marginTop: 40,
   },
   label: {
     fontSize: 16,
-    fontWeight: '500', 
-    color: '#305361',
+    fontWeight: '400', 
+    color: '#000000',
     marginBottom: 8,
-    marginTop: 16,
+    marginTop: 10,
   },
   input: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 8,
-    padding: 12,
+    padding: 10,
     fontSize: 16,
     marginBottom: 16,
-    width: '100%',
+    maxWidth: '100%', 
+    width: Dimensions.get('window').width - 40,
+    flexShrink: 1, 
+    alignSelf: 'flex-start', 
   },
   descriptionInput: {
     height: 120, 
     textAlignVertical: 'top', 
   },
   iconSelector: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 16,
     alignItems: 'center',
-    justifyContent: 'center',
-    height: 60,
+    width: Dimensions.get('window').width - 40, 
+    flexShrink: 1, 
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#FFF5E1',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#305361',
+    backgroundColor: '#F5F5F5',
+    padding: 20,
   },
   iconList: {
-    padding: 16,
+    paddingVertical: 10,
   },
   iconItem: {
     flex: 1,
     alignItems: 'center',
-    padding: 16,
-    margin: 4,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-  },
-  iconLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-    textAlign: 'center',
+    padding: 10,
   },
   modalCloseButton: {
-    backgroundColor: '#305361',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
+    backgroundColor: '#000000',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
   modalCloseButtonText: {
     color: '#FFFFFF',
