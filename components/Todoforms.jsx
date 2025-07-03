@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Moda
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const TodoForm = ({ navigateTo }) => {
+const TodoForms = ({ navigateTo }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('edit'); // Standard-Icon
@@ -225,4 +225,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TodoForm;
+export default TodoForms;
